@@ -16,7 +16,7 @@ cmd_builder () {
     --rnn-type=cuDNN \
     --mode=$1 \
     --save-epoch-latency=$4 \
-    --num-epochs=${epoch} \
+    --num-epochs=${epochs} \
     --learning-rate=${lr} \
     --train-batch-size=$3 $5"
 }
