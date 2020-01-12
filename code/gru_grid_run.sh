@@ -1,7 +1,7 @@
 set -e
 
-gpu=2070 # 2080ti
-output_dir=./gru-epoch-latency-${gpu}/
+gpu=$1 # 2070, 2080ti
+output_dir=./gru-epoch-latency-${gpu}
 epochs=400
 lr=0.0003
 
@@ -45,7 +45,7 @@ do
   for mode in normal blelloch
   do
     run_experiment $mode $seq_len 16 \
-      ./${output_dir}/training-curve-${mode}-IRMASmfcc_${seq_len}-batch_size_16.csv \
+      ${output_dir}/training-curve-${mode}-IRMASmfcc_${seq_len}-batch_size_16.csv \
       "--save-loss-acc"
   done
 done
@@ -57,7 +57,7 @@ do
     for mode in normal blelloch normal-nobp blelloch-nobp
     do
       run_experiment $mode $seq_len $batch_size \
-        ./${output_dir}/${mode}-IRMASmfcc_${seq_len}-batch_size_${batch_size}.csv \
+        ${output_dir}/${mode}-IRMASmfcc_${seq_len}-batch_size_${batch_size}.csv \
         ""
     done
   done

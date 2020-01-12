@@ -1,7 +1,7 @@
 set -e
 
-gpu=2070 # 2080ti
-output_dir=./rnn-epoch-latency-${gpu}/
+gpu=$1 # 2070, 2080ti
+output_dir=./rnn-epoch-latency-${gpu}
 
 cmd_builder () {
   # $1: "normal" or "blelloch"
@@ -43,7 +43,7 @@ mkdir -p $output_dir
 for mode in normal blelloch
 do
   run_experiment $mode 1000 16 \
-    ./${output_dir}/training-curve-${mode}-bernoulli1000_10-batch_size_16.csv \
+    ${output_dir}/training-curve-${mode}-bernoulli1000_10-batch_size_16.csv \
     50 \
     "--save-loss-acc"
 done
@@ -53,7 +53,7 @@ do
   for mode in normal blelloch normal-nobp
   do
     run_experiment ${mode} 1000 $batch_size \
-      ./${output_dir}/${mode}-bernoulli1000_10-batch_size_${batch_size}.csv \
+      ${output_dir}/${mode}-bernoulli1000_10-batch_size_${batch_size}.csv \
       10 \
       ""
   done
@@ -64,7 +64,7 @@ do
   for mode in normal blelloch normal-nobp
   do
     run_experiment $mode $seq_len 16 \
-      ./${output_dir}/${mode}-bernoulli${seq_len}_10-batch_size_16.csv \
+      ${output_dir}/${mode}-bernoulli${seq_len}_10-batch_size_16.csv \
       10 \
       ""
   done
