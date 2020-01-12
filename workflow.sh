@@ -11,6 +11,10 @@ ${DOCKER_BUILD} -f docker/Dockerfile -t bppsa:0.1 .
 
 cd ./code/
 
+# Download the datasets.
+wget https://zenodo.org/record/3605369/files/datasets.zip?download=1 -O datasets.zip
+unzip datasets.zip
+
 ${DOCKER_RUN} -it --rm \
   -v $HOME/workspace/BPPSA-open/:$HOME/workspace/BPPSA-open \
   bppsa:0.1 \
