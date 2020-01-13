@@ -10,3 +10,4 @@ Steps:
 ...
 ################
 ```
+4. At the end of the workflow, a `results/` directory will be created that contains figures similar to the ones inside the paper.
