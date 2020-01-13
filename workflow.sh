@@ -18,7 +18,9 @@ cd ./code/
 
 # Download the datasets.
 wget https://zenodo.org/record/3605369/files/datasets.zip?download=1 -O datasets.zip
-unzip datasets.zip && mv ./dataset/* ./ && rmdir ./dataset/
+unzip datasets.zip
+mv ./dataset/* ./
+rmdir ./dataset/
 
 ${DOCKER_RUN} -it --rm \
   -v ${PROJECT_ROOT}:${PROJECT_ROOT} \

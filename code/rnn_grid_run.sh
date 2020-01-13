@@ -17,6 +17,7 @@ cmd_builder () {
     --mode=$1 \
     --save-epoch-latency=$4 \
     --num-epochs=$5 \
+    --learning-rate=0.00001 \
     --train-batch-size=$3 $6"
 }
 
@@ -44,7 +45,7 @@ for mode in normal blelloch
 do
   run_experiment $mode 1000 16 \
     ${output_dir}/training-curve-${mode}-bernoulli1000_10-batch_size_16.csv \
-    50 \
+    100 \
     "--save-loss-acc"
 done
 
