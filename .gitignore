@@ -143,3 +143,7 @@ code/bernoulli300_10/
 code/bernoulli30_10/
 code/datasets.zip
 
+# Output files.
+results/
+code/gru-epoch-latency-*/
+code/rnn-epoch-latency-*/
