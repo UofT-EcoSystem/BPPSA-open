@@ -394,9 +394,6 @@ def main(args):
         np.testing.assert_equal(expected.indices, actual.indices)
         np.testing.assert_equal(expected.data, actual.data)
         assert expected.nnz == actual.nnz
-        print('{}:{}'.format(expected.indptr.dtype, actual.indptr.dtype))
-        print('{}:{}'.format(expected.indices.dtype, actual.indices.dtype))
-        print('{}:{}'.format(expected.data.dtype, actual.data.dtype))
 
     def test_jcbT_relu_maxpool2d(expected, actual):
         for sample_idx in range(expected.shape[0]):
@@ -407,9 +404,6 @@ def main(args):
             np.testing.assert_equal(e.indices, a.indices)
             np.testing.assert_equal(e.data, a.data)
             assert e.nnz == a.nnz
-            print('{}:{}'.format(e.indptr.dtype, a.indptr.dtype))
-            print('{}:{}'.format(e.indices.dtype, a.indices.dtype))
-            print('{}:{}'.format(e.data.dtype, a.data.dtype))
 
     for layer in layers:
         y = layer(x)
@@ -452,7 +446,7 @@ def main(args):
                 print('Generation Speedup: {} / {} = {}'.format(
                     latency_baseline, latency, latency_baseline / latency))
             else:
-                print(latency)
+                print('Took {} s'.format(latency))
         x = y
 
 
