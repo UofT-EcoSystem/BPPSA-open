@@ -42,12 +42,21 @@ ${DOCKER_RUN} -it --rm \
                 sh gru_grid_run.sh ${GPU}"
 ################################################################################
 
+mkdir -p ../results
+
 ################## Plot the results for the above experiments. #################
 ${DOCKER_RUN} -it --rm \
   -v ${PROJECT_ROOT}:${PROJECT_ROOT} \
   bppsa:0.1 \
   /bin/bash -c "cd `pwd` && python plot_rnn_results.py --gpu ${GPU} && \
                             python plot_gru_results.py --gpu ${GPU}"
-mkdir -p ../results
 mv ./fig_*.png ../results/
+################################################################################
+
+####### Produce the speedups for sparse transposed Jacobian Generation. ########
+${DOCKER_RUN} -it --rm \
+  -v ${PROJECT_ROOT}:${PROJECT_ROOT} \
+  bppsa:0.1 \
+  /bin/bash -c "cd `pwd` && \
+                python jacobian_csr.py > ../results/table_1_last_column.txt"
 ################################################################################
