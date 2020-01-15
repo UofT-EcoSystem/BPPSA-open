@@ -31,6 +31,7 @@ wget https://zenodo.org/record/3605369/files/datasets.zip?download=1 \
 unzip datasets.zip
 mv -f ./dataset/* ./
 rmdir ./dataset/
+rm -f datasets.zip
 ################################################################################
 
 ##################### Launch the RNN and GRU experiments. ######################
@@ -65,9 +66,11 @@ ${DOCKER_RUN} -it --rm \
 ######################### Download the Jacobians. ##############################
 wget https://zenodo.org/record/3608306/files/jcbTs.zip?download=1 -O jcbTs.zip
 unzip jcbTs.zip
+rm -f jcbTs.zip
 wget https://zenodo.org/record/3608306/files/jcbTs_prune.zip?download=1 \
     -O jcbTs_prune.zip
 unzip jcbTs_prune.zip
+rm -f jcbTs_prune.zip
 ################################################################################
 
 
