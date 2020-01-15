@@ -12,13 +12,17 @@ def floor_log(n):
     return int(np.floor(np.log2(n)))
 
 
-def blelloch(a, op, I, L_m=float('inf')):
+def blelloch(a,
+             op,
+             I,
+             L_m=float('inf'),
+             prelevel_callback=lambda: None,
+             postlevel_callback=lambda: None):
     """ A simulation of a *heterogeneous* Blelloch scan algorithm. The
     difference between this and a normal Blelloch scan algorithm is that you
     can control the number of levels that up-sweep and down-sweep performs by
     setting L_m.
     """
-    print(a, op, I, L_m)
 
     if isinstance(a, np.ndarray):
         n = a.shape[0] - 1
@@ -26,9 +30,11 @@ def blelloch(a, op, I, L_m=float('inf')):
         n = len(a) - 1
     d = -1
     for d in range(0, min(ceil_log(n + 1) - 2 + 1, L_m)):
+        prelevel_callback()
         for i in range(0, n - pow(2, d) + 1, pow(2, d + 1)):
             l, r = i + pow(2, d) - 1, min(i + pow(2, d + 1) - 1, n)
             a[r] = op(a[l], a[r])
+        postlevel_callback()
 
     #a[n] = I
     reduction = I
@@ -41,11 +47,13 @@ def blelloch(a, op, I, L_m=float('inf')):
     a[n] = reduction
 
     for d in reversed(range(0, min(ceil_log(n + 1) - 2 + 1, L_m))):
+        prelevel_callback()
         for i in range(0, n - pow(2, d) + 1, pow(2, d + 1)):
             l, r = i + pow(2, d) - 1, min(i + pow(2, d + 1) - 1, n)
             T = a[l]
             a[l] = a[r]
             a[r] = op(a[r], T)
+        postlevel_callback()
 
 
 def linear(a, op, I):

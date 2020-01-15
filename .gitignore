@@ -142,6 +142,10 @@ code/bernoulli3000_10/
 code/bernoulli300_10/
 code/bernoulli30_10/
 code/datasets.zip
+code/jcbTs.zip
+code/jcbTs/
+code/jcbTs_prune.zip
+code/jcbTs_prune/
 
 # Output files.
 results/

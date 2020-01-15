@@ -29,7 +29,7 @@ cd ./code/
 wget https://zenodo.org/record/3605369/files/datasets.zip?download=1 \
     -O datasets.zip
 unzip datasets.zip
-mv ./dataset/* ./
+mv -f ./dataset/* ./
 rmdir ./dataset/
 ################################################################################
 
@@ -50,7 +50,7 @@ ${DOCKER_RUN} -it --rm \
   bppsa:0.1 \
   /bin/bash -c "cd `pwd` && python plot_rnn_results.py --gpu ${GPU} && \
                             python plot_gru_results.py --gpu ${GPU}"
-mv ./fig_*.png ../results/
+mv -f ./fig_*.png ../results/
 ################################################################################
 
 ####### Produce the speedups for sparse transposed Jacobian Generation. ########
@@ -59,4 +59,23 @@ ${DOCKER_RUN} -it --rm \
   bppsa:0.1 \
   /bin/bash -c "cd `pwd` && \
                 python jacobian_csr.py > ../results/table_1_last_column.txt"
+################################################################################
+
+
+######################### Download the Jacobians. ##############################
+wget https://zenodo.org/record/3608306/files/jcbTs.zip?download=1 -O jcbTs.zip
+unzip jcbTs.zip
+wget https://zenodo.org/record/3608306/files/jcbTs_prune.zip?download=1 \
+    -O jcbTs_prune.zip
+unzip jcbTs_prune.zip
+################################################################################
+
+
+######### Produce the results for the pruned VGG-11 micro-benchmark. ###########
+${DOCKER_RUN} -it --rm \
+  -v ${PROJECT_ROOT}:${PROJECT_ROOT} \
+  bppsa:0.1 \
+  /bin/bash -c "cd `pwd` && \
+                python pruned_vgg11_analysis.py"
+mv -f ./fig_*.png ../results/
 ################################################################################
