@@ -75,7 +75,6 @@ unzip jcbTs_prune.zip
 ${DOCKER_RUN} -it --rm \
   -v ${PROJECT_ROOT}:${PROJECT_ROOT} \
   bppsa:0.1 \
-  /bin/bash -c "cd `pwd` && \
-                python pruned_vgg11_analysis.py"
+  /bin/bash -c "cd `pwd` && python pruned_vgg11_analysis.py"
 mv -f ./fig_*.png ../results/
 ################################################################################

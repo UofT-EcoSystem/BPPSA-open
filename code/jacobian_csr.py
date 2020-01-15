@@ -346,8 +346,7 @@ def jacobianT_maxpool2d(module, x):
             ceil_mode=module.ceil_mode,
             return_indices=True,
         )
-        x, y, pool_indices = x.detach().numpy(), y.numpy(), pool_indices.numpy(
-        )
+        x, y, pool_indices = x.detach().numpy(), y.numpy(), pool_indices.numpy()
     x_h, x_w = x.shape[2], x.shape[3]
     batch_size, channels, y_h, y_w = y.shape
     y_length = channels * y_h * y_w

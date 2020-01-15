@@ -118,6 +118,7 @@ def flipgemm(b, a, node_map, id_issuer, levels):
     levels.add(c_node.id)
     return c_node
 
+
 class Levels(object):
 
     def __init__(self):
@@ -138,6 +139,7 @@ class Levels(object):
 
     def get_levels(self):
         return self._levels
+
 
 def bppsa():
     jcbTs = load_jcbT_chain('./jcbTs_prune/retrain_99_jcb_list/')
@@ -163,6 +165,7 @@ def bppsa():
     )
     return node_map, levels.get_levels()
 
+
 def baseline():
     jcbTs = load_jcbT_chain('./jcbTs/iter_4999/')
     mnk = []
@@ -175,10 +178,10 @@ def baseline():
         else:
             mnk.append(j[0].shape[0] * j[0].shape[1])
             # ReLU/MaxPool
-            if j[0].shape[0] == j[0].shape[1]: #ReLU
+            if j[0].shape[0] == j[0].shape[1]:  #ReLU
                 # Init to 0 and pass certain gradients back.
                 flops.append(j[0].shape[0] + j[0].nnz)
-            else: # MaxPool
+            else:  # MaxPool
                 assert j[0].shape[0] > j[0].shape[1]
                 flops.append(j[0].shape[0] + j[0].shape[1])
     return flops, mnk
@@ -198,9 +201,10 @@ def get_critical_path(node_map, levels):
         critical_path.add(max_flop_node_id)
 
     for node_id, node in node_map.items():
-        if node_id in levels_set or (node.left_parent is None and node.right_parent is None):
+        if (node_id in levels_set or
+            (node.left_parent is None and node.right_parent is None)):
             continue
-        critical_path.add(node_id) # The linear scan in the middle.
+        critical_path.add(node_id)  # The linear scan in the middle.
 
     return critical_path
 
@@ -251,9 +255,15 @@ def plot(node_map, baseline_flops, baseline_mnk, critical_path):
     plt.xlabel('m x n x k')
     plt.ylabel('FLOP')
 
-    plt.scatter(x_axis_mv, y_axis_mv, facecolors='none', edgecolors='#f48642',
+    plt.scatter(x_axis_mv,
+                y_axis_mv,
+                facecolors='none',
+                edgecolors='#f48642',
                 label='mv')
-    plt.scatter(x_axis_mm, y_axis_mm, facecolors='none', edgecolors='#5A9BD5',
+    plt.scatter(x_axis_mm,
+                y_axis_mm,
+                facecolors='none',
+                edgecolors='#5A9BD5',
                 label='mm')
     plt.scatter(x_axis_mv_c, y_axis_mv_c, color='#f48642', label='mv, critical')
     plt.scatter(x_axis_mm_c, y_axis_mm_c, color='#5A9BD5', label='mm, critical')
@@ -261,8 +271,13 @@ def plot(node_map, baseline_flops, baseline_mnk, critical_path):
     x_axis_baseline = baseline_mnk
     y_axis_baseline = baseline_flops
 
-    plt.scatter(x_axis_baseline, y_axis_baseline, facecolors='none',
-                edgecolor='green', label='baseline (BP)')
+    plt.scatter(
+        x_axis_baseline,
+        y_axis_baseline,
+        facecolors='none',
+        edgecolor='green',
+        label='baseline (BP)',
+    )
 
     plt.legend()
     plt.savefig('./fig_13.png', bbox_inches='tight', pad_inches=0.0)
