@@ -26,12 +26,31 @@ ${DOCKER_BUILD} -f docker/Dockerfile -t bppsa:0.1 .
 cd ./code/
 
 ########################## Download the datasets. ##############################
-wget https://zenodo.org/record/3605369/files/datasets.zip?download=1 \
+wget https://zenodo.org/record/3612269/files/datasets.zip?download=1 \
     -O datasets.zip
 unzip datasets.zip
-mv -f ./dataset/* ./
-rmdir ./dataset/
+mv -f ./datasets/* ./
+rmdir ./datasets/
 rm -f datasets.zip
+################################################################################
+
+################ Download and preprocess the IRMAS datasets. ###################
+wget https://zenodo.org/record/1290750/files/IRMAS-TrainingData.zip?download=1 \
+    -O IRMAS-TrainingData.zip
+unzip IRMAS-TrainingData.zip
+rm -f IRMAS-TrainingData.zip
+mkdir -p IRMASmfcc_s IRMASmfcc_m IRMASmfcc_l
+${DOCKER_RUN} -it --rm \
+  -v ${PROJECT_ROOT}:${PROJECT_ROOT} \
+  bppsa:0.1 \
+  /bin/bash -c "cd `pwd` && \
+                python IRMAS_parser.py --data-dir ./IRMAS-TrainingData/ \
+                                       --save-dir ./IRMASmfcc_s/ --frames s && \
+                python IRMAS_parser.py --data-dir ./IRMAS-TrainingData/ \
+                                       --save-dir ./IRMASmfcc_m/ --frames m && \
+                python IRMAS_parser.py --data-dir ./IRMAS-TrainingData/ \
+                                       --save-dir ./IRMASmfcc_l/ --frames l"
+rm -rf IRMAS-TrainingData
 ################################################################################
 
 ##################### Launch the RNN and GRU experiments. ######################

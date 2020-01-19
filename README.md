@@ -15,3 +15,7 @@ The (open-source part of) code to reproduce "BPPSA: Scaling Back-propagation by 
 ################
 ```
 4. At the end of the workflow, a `results/` directory will be created that contains figures similar to the ones inside the paper.
+
+### Notes ###
+1. By using (including but not limited to: copy, modify, merge, publish, distribute) any part of this project, you consent to the terms in our license.
+2. By running `workflow.sh`, you consent to the terms in [IRMAS' license](https://www.upf.edu/web/mtg/irmas).
