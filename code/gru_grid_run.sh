@@ -1,8 +1,9 @@
 set -e
 
 gpu=$1 # 2070, 2080ti
+epochs_train_curve=$2
+epochs_bench=$3
 output_dir=./gru-epoch-latency-${gpu}
-epochs=400
 lr=0.0003
 
 cmd_builder () {
@@ -10,15 +11,16 @@ cmd_builder () {
   # $2: seq_len
   # $3: batch_size
   # $4: output file name
-  # $5: extra flags.
+  # $5: number of epochs.
+  # $6: extra flags.
   cmd="python gru.py \
     --save-dir=./IRMASmfcc_${2} \
     --rnn-type=cuDNN \
     --mode=$1 \
     --save-epoch-latency=$4 \
-    --num-epochs=${epochs} \
+    --num-epochs=$5 \
     --learning-rate=${lr} \
-    --train-batch-size=$3 $5"
+    --train-batch-size=$3 $6"
 }
 
 eval_cmd () {
@@ -32,9 +34,10 @@ run_experiment () {
   # $2: seq_len
   # $3: batch_size
   # $4: output file name
-  # $5: extra flags
+  # $5: number of epochs.
+  # $6: extra flags
 
-  cmd_builder $1 $2 $3 $4 $5
+  cmd_builder $1 $2 $3 $4 $5 $6
   eval_cmd $cmd
 }
 
@@ -46,6 +49,7 @@ do
   do
     run_experiment $mode $seq_len 16 \
       ${output_dir}/training-curve-${mode}-IRMASmfcc_${seq_len}-batch_size_16.csv \
+      ${epochs_train_curve} \
       "--save-loss-acc"
   done
 done
@@ -58,6 +62,7 @@ do
     do
       run_experiment $mode $seq_len $batch_size \
         ${output_dir}/${mode}-IRMASmfcc_${seq_len}-batch_size_${batch_size}.csv \
+        ${epochs_bench} \
         ""
     done
   done

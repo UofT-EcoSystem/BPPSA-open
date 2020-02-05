@@ -1,6 +1,8 @@
 set -e
 
 gpu=$1 # 2070, 2080ti
+epochs_train_curve=$2
+epochs_bench=$3
 output_dir=./rnn-epoch-latency-${gpu}
 
 cmd_builder () {
@@ -45,7 +47,7 @@ for mode in normal blelloch
 do
   run_experiment $mode 1000 16 \
     ${output_dir}/training-curve-${mode}-bernoulli1000_10-batch_size_16.csv \
-    100 \
+    ${epochs_train_curve} \
     "--save-loss-acc"
 done
 
@@ -55,7 +57,7 @@ do
   do
     run_experiment ${mode} 1000 $batch_size \
       ${output_dir}/${mode}-bernoulli1000_10-batch_size_${batch_size}.csv \
-      10 \
+      ${epochs_bench} \
       ""
   done
 done
@@ -66,7 +68,7 @@ do
   do
     run_experiment $mode $seq_len 16 \
       ${output_dir}/${mode}-bernoulli${seq_len}_10-batch_size_16.csv \
-      10 \
+      ${epochs_bench} \
       ""
   done
 done

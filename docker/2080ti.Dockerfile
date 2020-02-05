@@ -14,8 +14,8 @@ RUN curl -o ~/miniconda.sh -O https://repo.anaconda.com/miniconda/Miniconda3-lat
      chmod +x ~/miniconda.sh && \
      ~/miniconda.sh -b -p /opt/conda && \
      rm ~/miniconda.sh && \
-     /opt/conda/bin/conda install -y pytorch==1.1.0 torchvision==0.3.0 cudatoolkit=10.0 -c pytorch && \
-     /opt/conda/bin/conda install -y numba matplotlib pandas scipy && \
+     /opt/conda/bin/conda install -y pytorch==1.2.0 torchvision==0.4.0 cudatoolkit=10.0 -c pytorch && \
+     /opt/conda/bin/conda install -y numba=0.46 matplotlib pandas scipy && \
      /opt/conda/bin/conda install -y librosa=0.6.1 -c conda-forge && \ 
      /opt/conda/bin/conda clean -ya
 ENV PATH /opt/conda/bin:$PATH
