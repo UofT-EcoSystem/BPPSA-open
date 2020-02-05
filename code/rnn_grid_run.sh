@@ -53,7 +53,7 @@ done
 
 for batch_size in 2 4 8 16 32 64 128 256
 do
-  for mode in normal blelloch normal-nobp
+  for mode in normal blelloch normal-nobp blelloch-nobp
   do
     run_experiment ${mode} 1000 $batch_size \
       ${output_dir}/${mode}-bernoulli1000_10-batch_size_${batch_size}.csv \
@@ -64,7 +64,7 @@ done
 
 for seq_len in 10 30 100 300 3000 10000 30000
 do
-  for mode in normal blelloch normal-nobp
+  for mode in normal blelloch normal-nobp blelloch-nobp
   do
     run_experiment $mode $seq_len 16 \
       ${output_dir}/${mode}-bernoulli${seq_len}_10-batch_size_16.csv \

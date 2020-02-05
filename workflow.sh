@@ -27,10 +27,10 @@ DOCKER_RUN="docker run --gpus all"
 
 GPU=2080ti # or 2070
 DOCKERFILE=2080ti.Dockerfile # or 2070.Dockerfile
-EPOCHS_RNN_TRAIN_CURVE=100
-EPOCHS_RNN_BENCH=10
+EPOCHS_RNN_TRAIN_CURVE=80
+EPOCHS_RNN_BENCH=20
 EPOCHS_GRU_TRAIN_CURVE=400
-EPOCHS_GRU_BENCH=400
+EPOCHS_GRU_BENCH=100
 
 ################################################################################
 #                                                                              #

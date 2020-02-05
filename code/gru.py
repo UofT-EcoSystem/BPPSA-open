@@ -539,8 +539,7 @@ def main(args):
             elif args.mode == 'normal':
                 loss.backward()
             elif args.mode in {'normal-nobp', 'blelloch-nobp'}:
-                for param in rnn.parameters():
-                    param.grad = torch.zeros_like(param)
+                pass
             else:
                 raise RuntimeError('Impossible to reach here!')
 

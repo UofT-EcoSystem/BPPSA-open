@@ -26,7 +26,7 @@ class RNN(nn.Module):
         super(RNN, self).__init__()
         self._input_size = input_size
         self._hidden_size = hidden_size
-        assert mode in {'normal', 'blelloch', 'normal-nobp'}
+        assert mode in {'normal', 'blelloch', 'normal-nobp', 'blelloch-nobp'}
         self._mode = mode
         assert rnn_type in {'PyTorch', 'cuDNN'}
         self._rnn_type = rnn_type
@@ -84,7 +84,7 @@ class RNN(nn.Module):
             return self._rnn.bias_ih_l0
 
     def _forward_cuDNN(self, x, hx):
-        if self.training and self._mode in {'blelloch'}:
+        if self.training and self._mode in {'blelloch', 'blelloch-nobp'}:
             self._hx[-1, :, :] = hx
 
         hx = hx.view(1, -1, self._hidden_size)
@@ -92,7 +92,7 @@ class RNN(nn.Module):
                    self._input_size).transpose(0, 1).contiguous()
 
         output, hx = self._rnn(x, hx.view(1, -1, self._hidden_size))
-        if self.training and self._mode in {'blelloch'}:
+        if self.training and self._mode in {'blelloch', 'blelloch-nobp'}:
             scan.reverse_seq(self._hx[:-1, :, :], output[:-1, :, :])
             scan.reverse_seq(self._x, x)
             scan.fill_inputs2(self._scan_inputs, self.weight_hh, output)
@@ -112,14 +112,14 @@ class RNN(nn.Module):
         4. self._test_artifacts
         """
         for i in range(x.size(1)):
-            if self.training and self._mode in {'blelloch'}:
+            if self.training and self._mode in {'blelloch', 'blelloch-nobp'}:
                 self._hx[x.size(1) - 1 - i, :, :] = hx
                 self._x[x.size(1) - 1 - i, :, :] = x[:, i].view(
                     -1, self._input_size)
 
             hx = self._rnn_cell(x[:, i].unsqueeze(1), hx)
 
-            if self.training and self._mode in {'blelloch'}:
+            if self.training and self._mode in {'blelloch', 'blelloch-nobp'}:
                 scan.fill_inputs(self._scan_inputs, self.weight_hh, hx, i)
 
             # Debug.
@@ -131,7 +131,7 @@ class RNN(nn.Module):
         hx = torch.zeros((x.size(0), self._hidden_size),
                          device=self._linear_y.weight.device)
 
-        if self.training and self._mode in {'blelloch'}:
+        if self.training and self._mode in {'blelloch', 'blelloch-nobp'}:
             if self._scan_inputs is None:
                 # x.size(1) number of fully-connected and activation,
                 # 1 for the grad vec.
@@ -167,7 +167,7 @@ class RNN(nn.Module):
             forward_fn = lambda x, hx: self._forward_PyTorch(x, hx)
         else:
             forward_fn = lambda x, hx: self._forward_cuDNN(x, hx)
-        if self.training and self._mode in {'blelloch'}:
+        if self.training and self._mode in {'blelloch', 'blelloch-nobp'}:
             with torch.no_grad():
                 hx = forward_fn(x, hx)
                 self._last_hx = hx
@@ -344,9 +344,8 @@ def main(args):
                 rnn.backward_by_scan(loss)
             elif args.mode == 'normal':
                 loss.backward()
-            elif args.mode == 'normal-nobp':
-                for param in rnn.parameters():
-                    param.grad = torch.zeros_like(param)
+            elif args.mode in {'normal-nobp', 'blelloch-nobp'}:
+                pass
             else:
                 raise RuntimeError('Impossible to reach here!')
 
@@ -450,7 +449,7 @@ if __name__ == '__main__':
         type=str,
         required=False,
         default='blelloch',
-        choices=['blelloch', 'normal', 'normal-nobp'],
+        choices=['blelloch', 'normal', 'normal-nobp', 'blelloch-nobp'],
     )
     parser.add_argument(
         '--rnn-type',
