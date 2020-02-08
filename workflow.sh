@@ -46,8 +46,8 @@ download_bitstreams () {
   wget https://zenodo.org/record/3612269/files/datasets.zip?download=1 \
       -O datasets.zip
   unzip datasets.zip
-  mv -f ./datasets/* ./
-  rmdir ./datasets/
+  cp -rf ./datasets/* ./
+  rm -rf ./datasets/
   rm -f datasets.zip
 }
 
