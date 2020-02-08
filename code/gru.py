@@ -405,9 +405,12 @@ class GRU(nn.Module):
 
 
 def build_dataloaders(save_dir, train_batch_size, test_batch_size):
-    train_X = torch.load(os.path.join(save_dir, 'train_X'))
+    train_X = torch.load(os.path.join(save_dir, 'train_X')).cuda()
     X_size = train_X.size()
-    train_Y = torch.load(os.path.join(save_dir, 'train_Y'))
+    train_Y = torch.load(os.path.join(
+        save_dir,
+        'train_Y',
+    )).type(dtype=torch.long).cuda()
     #test_X = torch.load(os.path.join(save_dir, 'test_X'))
     #test_Y = torch.load(os.path.join(save_dir, 'test_Y'))
     #num_classes = (max(train_Y.max(), test_Y.max()) -
@@ -490,19 +493,8 @@ def main(args):
     ).cuda()
     loss_fn = nn.CrossEntropyLoss()
 
-    def zero_grad(self):
-        r"""Clears the gradients of all optimized :class:`torch.Tensor` s."""
-        for group in self.param_groups:
-            for p in group['params']:
-                if p.grad is not None:
-                    try:
-                        p.grad.detach_()
-                        p.grad.zero_()
-                    except RuntimeError as e:
-                        p.grad = None
-                        pass
-
-    torch.optim.Optimizer.zero_grad = zero_grad
+    if args.mode in {'blelloch', 'blelloch-nobp'}:
+        torch.optim.Optimizer.zero_grad = lambda self: None
     optimizer = optim.Adam(rnn.parameters(), lr=args.learning_rate)
 
     epoch_latency = {
@@ -528,8 +520,8 @@ def main(args):
                 test_artifacts.new_timeframe()
 
             optimizer.zero_grad()
-            x = batch[0].cuda()
-            y_ = batch[1].type(dtype=torch.long).cuda()
+            x = batch[0]
+            y_ = batch[1]
 
             y = rnn(x)
             loss = loss_fn(y, y_)
@@ -557,8 +549,8 @@ def main(args):
                 if args.num_iterations is not None and i >= args.num_iterations:
                     break
 
-                x = batch[0].cuda()
-                y_ = batch[1].type(dtype=torch.long).cuda()
+                x = batch[0]
+                y_ = batch[1]
 
                 y = rnn(x)
                 loss = loss_fn(y, y_)
