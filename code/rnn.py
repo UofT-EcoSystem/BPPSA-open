@@ -220,23 +220,25 @@ def build_dataloaders(save_dir, train_batch_size, test_batch_size):
         save_dir,
         'train_Y',
     )).type(dtype=torch.long).cuda()
-    test_X = torch.load(os.path.join(save_dir, 'test_X')).cuda()
-    test_Y = torch.load(os.path.join(
-        save_dir,
-        'test_Y',
-    )).type(dtype=torch.long).cuda()
-    num_classes = (max(train_Y.max(), test_Y.max()) -
-                   min(train_Y.min(), test_Y.min()) + 1)
+    #test_X = torch.load(os.path.join(save_dir, 'test_X')).cuda()
+    #test_Y = torch.load(os.path.join(
+    #    save_dir,
+    #    'test_Y',
+    #)).type(dtype=torch.long).cuda()
+    #num_classes = (max(train_Y.max(), test_Y.max()) -
+    #               min(train_Y.min(), test_Y.min()) + 1)
+    num_classes = (train_Y.max() - train_Y.min() + 1)
     train_loader = torch.utils.data.DataLoader(
         torch.utils.data.TensorDataset(train_X, train_Y),
         batch_size=train_batch_size,
         shuffle=True,
     )
-    test_loader = torch.utils.data.DataLoader(
-        torch.utils.data.TensorDataset(test_X, test_Y),
-        batch_size=test_batch_size,
-        shuffle=True,
-    )
+    #test_loader = torch.utils.data.DataLoader(
+    #    torch.utils.data.TensorDataset(test_X, test_Y),
+    #    batch_size=test_batch_size,
+    #    shuffle=True,
+    #)
+    test_loader = None
     return train_loader, test_loader, int(num_classes.item())
 
 
