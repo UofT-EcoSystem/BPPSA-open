@@ -131,12 +131,18 @@ def plot_training_curve(gpu):
     axs[0].set_ylabel('Training Loss')
     for i, seq_len in enumerate(seq_lens):
         bppsa_losses = read_training_csv(gpu, 'blelloch', seq_len)['loss']
-        bppsa_timestamps = read_csv(gpu, 'blelloch', seq_len,
-                                    '16')['timestamp']
+        bppsa_timestamps = read_training_csv(
+            gpu,
+            'blelloch',
+            seq_len,
+        )['timestamp']
 
         normal_losses = read_training_csv(gpu, 'normal', seq_len)['loss']
-        normal_timestamps = read_csv(gpu, 'normal', seq_len,
-                                     '16')['timestamp']
+        normal_timestamps = read_training_csv(
+            gpu,
+            'normal',
+            seq_len,
+        )['timestamp']
 
         normal = axs[i].plot(normal_timestamps,
                              normal_losses,
