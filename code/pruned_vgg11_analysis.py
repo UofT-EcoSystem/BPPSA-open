@@ -279,14 +279,15 @@ def plot(node_map, baseline_flops, baseline_mnk, critical_path):
         label='baseline (BP)',
     )
 
-    plt.legend()
-    plt.savefig('./fig_13.png', bbox_inches='tight', pad_inches=0.0)
+    plt.legend(ncol=2)
+    plt.savefig('./fig_10.png', bbox_inches='tight', pad_inches=0.0)
 
 
 def main():
     node_map, levels = bppsa()
     critical_path = get_critical_path(node_map, levels)
     baseline_flops, baseline_mnk = baseline()
+    plt.rcParams.update({'font.size': 15})
     plot(node_map, baseline_flops, baseline_mnk, critical_path)
 
 

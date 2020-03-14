@@ -6,8 +6,8 @@ import pandas as pd
 
 def read_csv(gpu, mode, seq_len, batch_size):
     return pd.read_csv(
-        './gru-epoch-latency-{}/{}-IRMASmfcc_{}-batch_size_{}.csv'
-        .format(gpu, mode, seq_len, batch_size),
+        './gru-epoch-latency-{}/{}-IRMASmfcc_{}-batch_size_{}.csv'.format(
+            gpu, mode, seq_len, batch_size),
         index_col=0)
 
 
@@ -15,13 +15,7 @@ def plot_runtime_breakdown(gpu):
     batch_sizes = [16, 32, 64]
     seq_lens = ['s', 'm', 'l']
     gpus = [gpu]
-    fig, axs = plt.subplots(
-        3,
-        3,
-        sharex=True,
-        sharey=True,
-        figsize=(7, 7)
-    )
+    fig, axs = plt.subplots(3, 3, sharex=True, sharey=True, figsize=(7, 7))
     for ax, batch_size in zip(axs[0], batch_sizes):
         ax.set_title('Batch Size = {}'.format(batch_size), size=15, pad=10)
     for ax, seq_len in zip(axs[:, 0], seq_lens):
@@ -103,7 +97,7 @@ def plot_runtime_breakdown(gpu):
     )
     fig.tight_layout()
     plt.savefig(
-        'fig_12.png',
+        'fig_9.png',
         bbox_extra_artists=(lgd,),
         bbox_inches='tight',
         dpi=300,
@@ -112,18 +106,14 @@ def plot_runtime_breakdown(gpu):
 
 def read_training_csv(gpu, mode, seq_len):
     return pd.read_csv(
-        './gru-epoch-latency-{}/training-curve-{}-IRMASmfcc_{}-batch_size_16.csv'.format(
-            gpu, mode, seq_len),
+        './gru-epoch-latency-{}/training-curve-{}-IRMASmfcc_{}-batch_size_16.csv'
+        .format(gpu, mode, seq_len),
         index_col=0)
 
 
 def plot_training_curve(gpu):
     seq_lens = ['s', 'm', 'l']
-    fig, axs = plt.subplots(
-        1,
-        3,
-        figsize=(10, 3.5)
-    )
+    fig, axs = plt.subplots(1, 3, figsize=(10, 3.5))
     print(axs.shape)
     for ax, seq_len in zip(axs, seq_lens):
         ax.set_title(seq_len.upper(), size=15, pad=10)
@@ -164,17 +154,20 @@ def plot_training_curve(gpu):
     )
     fig.tight_layout()
     plt.savefig(
-        'fig_11.png',
+        'fig_13.png',
         bbox_extra_artists=(lgd,),
         bbox_inches='tight',
         dpi=300,
     )
 
+
 def main(args):
     import matplotlib
     plt.rcParams.update({'font.size': 14})
     plot_runtime_breakdown(args.gpu)
+    plt.rcParams.update({'font.size': 20})
     plot_training_curve(args.gpu)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
