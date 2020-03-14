@@ -1,7 +1,6 @@
 #include <math.h>
-#include <torch/extension.h>
+#include <torch/types.h>
 
-#include <cooperative_groups.h>
 #include <cuda.h>
 #include <cuda_runtime.h>
 
