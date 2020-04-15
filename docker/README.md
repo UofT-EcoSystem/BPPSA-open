@@ -3,7 +3,11 @@
 In the root directory of `BPPSA-open/`, run:
 
 ```bash
-nvidia-docker image build -f docker/Dockerfile -t bppsa:0.1 .
+# Old version of nvidia-docker:
+nvidia-docker image build -f docker/2070.Dockerfile -t bppsa:0.1 .
+
+# New version of nvidia-docker:
+docker image build -f docker/2070.Dockerfile -t bppsa:0.1 .
 ```
 
 # To run something (a script, executable, etc.).
