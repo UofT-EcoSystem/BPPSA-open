@@ -1,5 +1,5 @@
 # BPPSA-open
-The (open-source part of) code to reproduce "BPPSA: Scaling Back-propagation by Parallel Scan Algorithm".
+The (open-source part of) code to reproduce [BPPSA: Scaling Back-propagation by Parallel Scan Algorithm](https://proceedings.mlsys.org/paper/2020/hash/96da2f590cd7246bbde0051047b0d6f7-Abstract.html) published in [MLSys'20](https://mlsys.org/Conferences/2020).
 
 ## Dependencies ##
 - [`nvidia-docker`](https://github.com/NVIDIA/nvidia-docker)
@@ -16,6 +16,21 @@ The (open-source part of) code to reproduce "BPPSA: Scaling Back-propagation by 
 ```
 4. At the end of the workflow, a `results/` directory will be created that contains figures similar to the ones inside the paper.
 
-### Notes ###
+## Citation ##
+
+```BibTeX
+@inproceedings{MLSYS2020_BPPSA,
+ author = {Wang, Shang and Bai, Yifan and Pekhimenko, Gennady},
+ booktitle = {Proceedings of Machine Learning and Systems},
+ editor = {I. Dhillon and D. Papailiopoulos and V. Sze},
+ pages = {451--469},
+ title = {BPPSA: Scaling Back-propagation by Parallel Scan Algorithm},
+ url = {https://proceedings.mlsys.org/paper/2020/file/96da2f590cd7246bbde0051047b0d6f7-Paper.pdf},
+ volume = {2},
+ year = {2020}
+}
+```
+
+## Notes ##
 1. By using (including but not limited to: copy, modify, merge, publish, distribute) any part of this project, you consent to the terms in our license.
 2. By running `workflow.sh`, you consent to the terms in [IRMAS' license](https://www.upf.edu/web/mtg/irmas).
