@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>BPPSA: Scaling Back-propagation by Parallel Scan Algorithm</title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        .paperthumb {
+            float: left;
+            width: 120px;
+            margin: 3px 10px 7px 0;
+        }
+
+        .paperdesc {
+            clear: both;
+        }
+    </style>
+</head>
+
+<body class="nd-docs">
+    <div class="nd-pageheader">
+        <div class="container">
+            <p class="lead">
+            <p style="font-size:36px"><b>Scaling <span style="font-size:60px">B</span>ack-<span style="font-size:60px">P</span>ropagation by <span style="font-size:60px">P</span>arallel <span style="font-size:60px">S</span>can <span style="font-size:60px">A</span>lgorithm</b></p>
+            <br>
+            <address>
+                <nobr>
+                    <a href="http://www.cs.toronto.edu/~wangsh46/" target="_blank" class="d-inline-block p-3">
+                        <img height="100" class="profile-image rounded-circle" src="images/Shang_Wang.JPG" alt="">
+                        <br>
+                        Shang Wang<sup></sup>
+                    </a>
+                </nobr>
+                <nobr>
+                    <a href="https://www.linkedin.com/in/yifan-bai-68522a131" target="_blank" class="d-inline-block p-3">
+                        <img height="100" class="profile-image rounded-circle" src="images/Yifan_Bai.jpg" alt="">
+                        <br>
+                        Yifan Bai<sup></sup>
+                    </a>
+                </nobr>
+                <nobr>
+                    <a href="http://www.cs.toronto.edu/~pekhimenko/" target="_blank" class="d-inline-block p-3">
+                        <img height="100" class="profile-image rounded-circle" src="images/Gennady_Pekhimenko.jpg" alt="">
+                        <br>
+                        Gennady Pekhimenko<sup></sup>
+                    </a>
+                </nobr>
+                <br>
+                <br>
+                <nobr>
+                    In <a href="https://proceedings.mlsys.org/paper/2020" target="_blank">Proceedings of Machine Learning and Systems 2</a>
+                    (<a href="https://mlsys.org/Conferences/2020">MLSys 2020</a>)
+                </nobr>
+            </address>
+            </p>
+        </div>
+    </div> <!-- end nd-pageheader -->
+
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col text-center">
+                <p>
+                    <a href="https://proceedings.mlsys.org/paper/2020/hash/96da2f590cd7246bbde0051047b0d6f7-Abstract.html" class="d-inline-block p-3">
+                        <i class="fas fa-file-alt"> Paper</i>
+                    </a>
+                    <a href="https://mlsys.org/Conferences/2020/Schedule?showEvent=1407" class="d-inline-block p-3">
+                        <i class="fas fa-chalkboard-teacher"> Oral</i>
+                    </a>
+                    <a href="files/MLSys2020_BPPSA_clean.pptx" class="d-inline-block p-3">
+                        <i class="fas fa-file-powerpoint"> Slides</i>
+                    </a>
+                    <a href="images/MLSys2020_BPPSA_poster.jpg" class="d-inline-block p-3">
+                        <i class="fas fa-columns"> Poster</i>
+                    </a>
+                    <a href="https://github.com/UofT-EcoSystem/BPPSA-open" class="d-inline-block p-3">
+                        <i class="fab fa-github-square"> <b>GitHub</b></i>
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                <img height="300" src="images/intro.gif">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <h3>Abstract</h3>
+                <p>
+                    In an era when the performance of a single compute device plateaus, software must be designed to scale on
+                    massively parallel systems for better runtime performance. However, in the context of training deep learning
+                    models, the popular back-propagation (BP) algorithm imposes a strong sequential dependency in the process of
+                    gradient computation. Under model parallelism, BP takes &Theta;(n) steps to complete which hinders its scalability on
+                    parallel systems (n represents the number of compute devices into which a model is partitioned).
+                    <br><br>
+                    In this work, in order to improve the scalability of BP, we reformulate BP into a scan operation which is a primitive
+                    that performs an in-order aggregation on a sequence of values and returns the partial result at each step. We can
+                    then scale such reformulation of BP on parallel systems by our modified version of the Blelloch scan algorithm
+                    which theoretically takes &Theta;(log n) steps. We evaluate our approach on a vanilla Recurrent Neural Network (RNN)
+                    training with synthetic datasets and a RNN with Gated Recurrent Units (GRU) training with the IRMAS dataset,
+                    and demonstrate up to 2.75&times; speedup on the overall training time and 108&times; speedup on the backward pass. We
+                    also demonstrate that the retraining of pruned networks can be a practical use case of our method.
+                </p>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col">
+                <h3>What is the back-propagation (BP) algorithm?</h3>
+                <p>
+                </p>
+
+                <h3>What is BP's strong sequential dependency?</h3>
+                <p>
+                </p>
+
+                <h3>How can we reformulate BP?</h3>
+                <p>
+                </p>
+
+                <h3>How can we scale BP by the (slightly modified) Blelloch scan algorithm?</h3>
+                <p>
+                </p>
+
+                <h3>Wanna learn more about BPPSA?</h3>
+                <p>
+                    <center class="embed-responsive-16by9">
+                        <iframe width="896" height="504" src="https://www.youtube.com/embed/HByumFamk4A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </center>
+                    <br>
+
+                </p>
+
+
+                <h3>Citation</h3>
+                <pre class="highlight">
+@inproceedings{MLSYS2020_BPPSA,
+ author = {Wang, Shang and Bai, Yifan and Pekhimenko, Gennady},
+ booktitle = {Proceedings of Machine Learning and Systems},
+ editor = {I. Dhillon and D. Papailiopoulos and V. Sze},
+ pages = {451--469},
+ title = {BPPSA: Scaling Back-propagation by Parallel Scan Algorithm},
+ url = {https://proceedings.mlsys.org/paper/2020/file/96da2f590cd7246bbde0051047b0d6f7-Paper.pdf},
+ volume = {2},
+ year = {2020}
+}               </pre>
+
+                <hr />
+                <div class="col">
+                    <p>
+                        <a href="http://www.cs.toronto.edu/ecosystem/" target="_blank" class="d-inline-block p-3">
+                            <img height="60" src="images/ecosystem.png" data-nothumb>
+                        </a>
+                        <a href="http://www.cs.toronto.edu/" target="_blank" class="d-inline-block p-3">
+                            <img height="60" src="images/UofT_DCS_logo.png" data-nothumb>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div> <!-- row -->
+
+    </div> <!-- container -->
+
+</body>
+
+</html>
