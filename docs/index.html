@@ -92,12 +92,6 @@
         </div>
 
         <div class="row">
-            <div class="col text-center">
-                <img height="300" src="images/intro.gif">
-            </div>
-        </div>
-
-        <div class="row">
             <div class="col">
                 <h3>Abstract</h3>
                 <p>
@@ -124,21 +118,60 @@
             <div class="col">
                 <h3>What is the back-propagation (BP) algorithm?</h3>
                 <p>
+                    <b>Back-propagation</b> is used for computing the gradients during the training of deep learning (DL) models. The key
+                    idea of this algorithm is that we could get the gradients of the training loss with respect to the inputs of an
+                    operator by multiplying the transposed Jacobian of this operator with the gradients of the training loss with respect
+                    to the outputs. Since a DL model usually can be thought of as a computational graph of different types of operators
+                    (e.g., Conv2d, Linear, ReLU, etc.), BP enables us to calculate the gradients of the training loss with respect to
+                    every part of the model, one operator at a time recursively. The following animation demonstrates BP's key idea:
+                </p>
+                <img height="600" src="images/bp.gif">
+                <p>
+                    From the animation above, we can see that BP imposes a <b>strong sequential dependency</b> across operators. When one
+                    operator is currently computing the gradients, the topologically earlier operators have to wait until it finishes.
+                    Thus, this strong sequential dependency could potentially cause underutilization of the underlying hardware resource,
+                    if the gradient computation of a single operator only utilizes a small portion of the given hardware resource.
                 </p>
 
-                <h3>What is BP's strong sequential dependency?</h3>
+                <h3>What is a scan primitive?</h3>
                 <p>
+                    Also known as the prefix sum, <b>scan</b> performs an in-order aggregation on a sequence of values given a
+                    <b>binary</b> and <b>associative</b> operator, and returns the partial result at each step. The scan primitive can be
+                    easily understood from the following example:
                 </p>
+                <img height="600" src="images/scan.gif">
+                <br><br>
+                <p>
+                    Normally, scan can be performed in a linear and sequential approach:
+                </p>
+                <img height="600" src="images/linear_scan.gif">
+                <p>
+                    Assuming the length of the input sequence is <b>n</b>, the above approach would take <b>&Theta;(n)</b> steps to
+                    complete. However, if we have a <b>parallel computing system</b> (e.g., multi-core CPUs or GPUs that are widely used
+                    for training DL models) that can execute
+                    multiple instructions concurrently, we can leverage some parallel scan algorithms, such as the
+                    <b>Blelloch scan algorithm</b><sup>1</sup>, to reduce the number of steps until completion to <b>&Theta;(log n)</b>:
+                </p>
+                <img height="600" src="images/blelloch_scan.gif">
 
-                <h3>How can we reformulate BP?</h3>
+                <h3>Can we leverage the Blelloch scan algorithm to scale BP?</h3>
                 <p>
+                    Indeed, since the matrix multiplication is also <b>binary</b> and <b>associative</b>, we can express the recursive
+                    formulation of BP as a scan primitive:
                 </p>
-
-                <h3>How can we scale BP by the (slightly modified) Blelloch scan algorithm?</h3>
+                <img height="600" src="images/bp_as_scan.gif">
                 <p>
+                    Consequently, we can use the same Blelloch scan algorithm to scale such reformulation of BP on parallel systems for
+                    better utilization of hardware resource:
                 </p>
+                <img height="600" src="images/bppsa.gif">
 
                 <h3>Wanna learn more about BPPSA?</h3>
+                Unfortunately, BPPSA's original MLSys'20 talk was never recorded; however, a condensed version of the talk was recorded
+                and given at <a href="https://cohesa.org/2020/08/05/2020-annual-general-meeting-agenda/">COHESA'20</a>. We recommend
+                watching this video as an introduction before diving into our
+                <a href="https://proceedings.mlsys.org/paper/2020/hash/96da2f590cd7246bbde0051047b0d6f7-Abstract.html">paper</a> and
+                <a href="https://github.com/UofT-EcoSystem/BPPSA-open">code</a>.
                 <p>
                     <center class="embed-responsive-16by9">
                         <iframe width="896" height="504" src="https://www.youtube.com/embed/HByumFamk4A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
